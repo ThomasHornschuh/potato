@@ -19,28 +19,32 @@ use ieee.std_logic_1164.all;
 entity toplevel is
 	port(
 		clk     : in  std_logic;
-		reset_n : in  std_logic;
+		I_RESET : in  std_logic;
 
 		-- GPIOs:
-		-- 4x LEDs        (bits 11 downto 8)
-		-- 4x Switches    (bits  7 downto 4)
+		-- 4x LEDs        (bits 7 downto 4)		
 		-- 4x Buttons     (bits  3 downto 0)
-		gpio_pins : inout std_logic_vector(11 downto 0);
+		gpio_pins : inout std_logic_vector(7 downto 0);
+
 
 		-- UART0 signals:
 		uart0_txd : out std_logic;
-		uart0_rxd : in  std_logic;
+		uart0_rxd : in  std_logic
 
 		-- UART1 signals:
-		uart1_txd : out std_logic;
-		uart1_rxd : in  std_logic
+		--uart1_txd : out std_logic;
+		--uart1_rxd : in  std_logic
 	);
 end entity toplevel;
 
 architecture behaviour of toplevel is
 
+   -- TH: Unconnected Signals on Papilio Pro
+	signal uart1_txd,uart1_rxd : std_logic;
+	
+
 	-- Reset signals:
-	signal reset : std_logic;
+	signal reset_n,reset : std_logic;
 
 	-- Internal clock signals:
 	signal system_clk : std_logic;
@@ -164,6 +168,9 @@ architecture behaviour of toplevel is
 
 begin
 
+   -- TH: Invert RESET Pin, because the orginial design has a negative reset. 
+   reset_n<= not I_RESET;
+
 	irq_array <= (
 			IRQ_TIMER0_INDEX => timer0_irq,
 			IRQ_TIMER1_INDEX => timer1_irq,
@@ -267,7 +274,7 @@ begin
 	clkgen: entity work.clock_generator
 		port map(
 			clk => clk,
-			reset_n => reset_n,
+			reset => reset_n,
 			system_clk => system_clk,
 			timer_clk => timer_clk,
 			locked => system_clk_locked

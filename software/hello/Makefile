@@ -4,7 +4,7 @@
 
 .PHONY: all clean
 
-TARGET_PREFIX ?= riscv64-unknown-elf
+TARGET_PREFIX ?= riscv32-unknown-elf
 TARGET_CC := $(TARGET_PREFIX)-gcc
 TARGET_LD := $(TARGET_PREFIX)-gcc
 TARGET_SIZE := $(TARGET_PREFIX)-size
@@ -12,6 +12,7 @@ TARGET_OBJCOPY := $(TARGET_PREFIX)-objcopy
 HEXDUMP ?= hexdump
 
 TARGET_CFLAGS += -m32 -march=RV32I -Wall -Os -fomit-frame-pointer \
+          -msoft-float\
 	-ffreestanding -fno-builtin -I../.. -I../../libsoc -std=gnu99 \
 	-Wall -Werror=implicit-function-declaration
 TARGET_LDFLAGS += -m32 -march=RV32I -nostartfiles -L../libsoc \
