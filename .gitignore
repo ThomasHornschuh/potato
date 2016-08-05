@@ -20,3 +20,5 @@ develop/
 xsim.dir/
 #misc
 *~
+*.s
+*.lst
