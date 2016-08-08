@@ -22,3 +22,4 @@ xsim.dir/
 *~
 *.s
 *.lst
+local/
