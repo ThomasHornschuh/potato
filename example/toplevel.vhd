@@ -28,8 +28,11 @@ entity toplevel is
 
 
 		-- UART0 signals:
-		uart0_txd : out std_logic;
-		uart0_rxd : in  std_logic
+		uart0_txd_pin : out std_logic;
+		uart0_rxd : in  std_logic;
+		
+		-- LED on Papilio Pro Board
+		led1 : out std_logic
 
 		-- UART1 signals:
 		--uart1_txd : out std_logic;
@@ -45,6 +48,8 @@ architecture behaviour of toplevel is
 
 	-- Reset signals:
 	signal reset_n,reset : std_logic;
+	
+	signal uart0_txd : std_logic; -- Output signal of UART component
 
 	-- Internal clock signals:
 	signal system_clk : std_logic;
@@ -170,6 +175,10 @@ begin
 
    -- TH: Invert RESET Pin, because the orginial design has a negative reset. 
    reset_n<= not I_RESET;
+	
+	-- TH: Debug code
+	uart0_txd_pin<=uart0_txd; -- real output
+	led1<=uart0_txd; --debug output
 
 	irq_array <= (
 			IRQ_TIMER0_INDEX => timer0_irq,
@@ -274,7 +283,7 @@ begin
 	clkgen: entity work.clock_generator
 		port map(
 			clk => clk,
-			reset => reset_n,
+			reset => '0',
 			system_clk => system_clk,
 			timer_clk => timer_clk,
 			locked => system_clk_locked
