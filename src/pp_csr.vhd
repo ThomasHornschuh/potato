@@ -93,17 +93,27 @@ package pp_csr is
 		end record;
 
 	--! Creates the value of the mstatus registe from the EI and EI1 bits.
-	function csr_make_mstatus(ie, ie1 : in std_logic) return std_logic_vector;
+    function csr_make_mstatus(ie, ie1 : in std_logic) return std_logic_vector;
 
 end package pp_csr;
 
 package body pp_csr is
 
-	function to_std_logic_vector(input : in csr_exception_cause)
-		return std_logic_vector is
-	begin
-		return (31 => input(5), 30 downto 5 => '0') & input(4 downto 0);
-	end function to_std_logic_vector;
+--	function to_std_logic_vector(input : in csr_exception_cause) return std_logic_vector is
+--	begin
+--	  
+--	  return  := (31 => input(5), 30 downto 5 => '0') & input(4 downto 0);	  
+--	end function to_std_logic_vector;
+
+-- TH: Workaround for bug in ISIM from ISE 14.7, it cant handle the expression 
+
+   function to_std_logic_vector(input : in csr_exception_cause) return std_logic_vector is
+	  variable r : std_logic_vector(31 downto 0);
+	begin	   
+	  r:=  input(5) & "00000000000000000000000000" & input(4 downto 0);
+	  return r;
+	end;  
+
 
 	function csr_make_mstatus(ie, ie1 : in std_logic) return std_logic_vector is
 		variable retval : std_logic_vector(31 downto 0);
@@ -118,5 +128,6 @@ package body pp_csr is
 			others => '0');
 		return retval;
 	end function csr_make_mstatus;
-
+	
+	
 end package body pp_csr;

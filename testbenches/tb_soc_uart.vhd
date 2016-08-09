@@ -12,7 +12,7 @@ architecture testbench of tb_soc_uart is
 
 	-- Clock signal:
 	signal clk : std_logic := '0';
-	constant clk_period : time := 10 ns;
+	constant clk_period : time := 31.5 ns; -- TH: Set clock period 1/32 of Baudrate (1000ns)
 
 	-- Reset signal:
 	signal reset : std_logic := '1';
@@ -81,7 +81,9 @@ begin
 		reset <= '0';
 
 		-- Set the sample clock to obtain a 1 Mbps transfer rate:
-		uart_write(x"00c", x"06");
+		--uart_write(x"00c", x"06");
+		--TH:  Set clock divisor to 1 base on formula f_clk / (baudrate * 16)) - 1
+		uart_write(x"00c", x"01");
 
 		-- Enable the data received interrupt:
 		uart_write(x"010", x"01");
@@ -89,30 +91,32 @@ begin
 		-- Send a byte on the UART:
 		rxd <= '0'; -- Start bit
 		wait for 1 us;
-		rxd <= '0';
+		rxd <= '1';  -- bit 0
 		wait for 1 us;
-		rxd <= '1';
+		rxd <= '0';  -- 1  
 		wait for 1 us;
-		rxd <= '0';
+		rxd <= '1';  -- 2 
 		wait for 1 us;
-		rxd <= '1';
+		rxd <= '0';  -- 3
 		wait for 1 us;
-		rxd <= '0';
+		rxd <= '1'; --  4
 		wait for 1 us;
-		rxd <= '0';
+		rxd <= '0';  -- 5
 		wait for 1 us;
-		rxd <= '0';
+		rxd <= '1';   --6 
 		wait for 1 us;
-		rxd <= '0';
+		rxd <= '0';  -- 7
 		wait for 1 us;
 		rxd <= '1'; -- Stop bit
-		wait for 1 us;
+--		wait for 1 us;
 
 		wait until irq = '1';
+		
+		wait for clk_period;
 
 		-- Disable the IRQ:
 		uart_write(x"010", x"00");
-		wait until irq = '0';
+--		wait until irq = '0';
 
 		-- Output a "Potato" on the UART:
 		uart_write(x"000", x"50");
