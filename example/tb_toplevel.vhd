@@ -11,29 +11,29 @@ end entity tb_toplevel;
 architecture testbench of tb_toplevel is
 
 	signal clk : std_logic := '0';
-	constant clk_period : time := 10 ns;
+	constant clk_period : time :=31.25 ns;
 
 	signal reset_n : std_logic := '0';
 
-	signal gpio_pins : std_logic_vector(11 downto 0);
+	signal gpio_pins : std_logic_vector(7 downto 0);
 
 	signal uart0_txd : std_logic;
 	signal uart0_rxd : std_logic := '1';
 
-	signal uart1_txd : std_logic;
-	signal uart1_rxd : std_logic := '1';
+--	signal uart1_txd : std_logic;
+--	signal uart1_rxd : std_logic := '1';
 
 begin
 
 	uut: entity work.toplevel
 		port map(
 			clk => clk,
-			reset_n => reset_n,
+			i_reset => reset_n,
 			gpio_pins => gpio_pins,
 			uart0_txd => uart0_txd,
-			uart0_rxd => uart0_rxd,
-			uart1_txd => uart1_txd,
-			uart1_rxd => uart1_rxd
+			uart0_rxd => uart0_rxd
+	--		uart1_txd => uart1_txd,
+	--		uart1_rxd => uart1_rxd
 		);
 
 	clock: process
@@ -46,9 +46,9 @@ begin
 
 	stimulus: process
 	begin
-		reset_n <= '0';
-		wait for clk_period * 4;
 		reset_n <= '1';
+		wait for clk_period * 4;
+		reset_n <= '0';
 
 		wait;
 	end process stimulus;
