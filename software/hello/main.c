@@ -4,7 +4,11 @@
 
 #include <stdint.h>
 
-#include "platform.h"
+//#include "platform.h"
+
+#define PLATFORM_UART0_BASE 0xc0002000
+#define PLATFORM_SYSCLK_FREQ 32000000
+
 #include "uart.h"
 
 void exception_handler(uint32_t cause, void * epc, void * regbase)

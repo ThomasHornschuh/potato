@@ -18,4 +18,8 @@ develop/
 *.prj
 *.pb
 xsim.dir/
+#misc
+*~
+*.lst
+*.s
 
