@@ -29,6 +29,7 @@ architecture behaviour of aee_rom_wrapper is
 begin
 
 	rom: entity work.aee_rom
+	   generic map ( MemDepth => (MEMORY_SIZE / 4) )
 		port map(
 			clka => clk,
 			addra => wb_adr_in(log2(MEMORY_SIZE) - 1 downto 2),
